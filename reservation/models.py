@@ -14,16 +14,8 @@ class Reservation(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     reservation_date = models.DateField(auto_now_add=True)
     num_of_seats = models.IntegerField()
+    # n-ary model includes (reservation_fk,seats, movie_fk) ??
+    seat_names = models.CharField(max_length=255, default="")
 
     def __str__(self):
         return f"{ self.customer } { self.movie_id }"
-
-
-class Seat(models.Model):
-    reservation = models.ForeignKey(
-        Reservation, on_delete=models.CASCADE, related_name="seats"
-    )
-    seat_name = models.CharField(max_length=255)  # a2, a3, b3, b4, etc.
-
-    class Meta:
-        db_table = "reserved_seats"

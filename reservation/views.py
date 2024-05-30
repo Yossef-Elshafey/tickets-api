@@ -6,7 +6,5 @@ from reservation.serializers import ReservationSer
 
 
 class ListReservation(generics.ListCreateAPIView):
-    queryset = Reservation.objects.prefetch_related(
-        "hall_id", "movie_id", "customer"
-    ).all()
+    queryset = Reservation.objects.prefetch_related("movie_id", "customer").all()
     serializer_class = ReservationSer

@@ -12,6 +12,7 @@ class Movie(models.Model):
     duration = models.DecimalField(max_digits=3, decimal_places=2)
     avaliable = models.BooleanField(default=True)  # once add it should be avaliable
     slug = models.SlugField(default="", null=True, blank=True)
+    hall_id = models.ForeignKey("hall.Hall", on_delete=models.SET_DEFAULT, default=0)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
