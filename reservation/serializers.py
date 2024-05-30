@@ -29,17 +29,28 @@ class CustomValidation:
 
         return True
 
+    @staticmethod
+    def raise_(msg):
+        raise msg
+
     def validate_seat_names(self, num_of_seats, names):
         """
         check if num_of_seats is the same as the seat names in payload
         """
-        non_equal = lambda: raise_(
-            serializers.ValidationError("number of seats doesn't match seats reserved")
-        )
         if num_of_seats and names:
             names_count = len(names.split(","))
-            print(names_count, num_of_seats)
-            return True if num_of_seats == names_count else non_equal
+            print(names_count == num_of_seats)
+
+            # this look trash but i love python hacks
+            return (
+                True
+                if num_of_seats == names_count
+                else self.raise_(
+                    serializers.ValidationError(
+                        "seat names doesn't match the num of seats reserverd"
+                    )
+                )
+            )
 
 
 class ReservationSer(serializers.ModelSerializer):
