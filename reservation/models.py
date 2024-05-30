@@ -11,12 +11,12 @@ class Reservation(models.Model):
         on_delete=models.CASCADE,
         related_name="movies",
     )
-    hall_id = models.ForeignKey(
-        "hall.Hall", on_delete=models.CASCADE, related_name="hall"
-    )
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     reservation_date = models.DateField(auto_now_add=True)
     num_of_seats = models.IntegerField()
+
+    def __str__(self):
+        return f"{ self.customer } { self.movie_id }"
 
 
 class Seat(models.Model):
@@ -24,3 +24,6 @@ class Seat(models.Model):
         Reservation, on_delete=models.CASCADE, related_name="seats"
     )
     seat_name = models.CharField(max_length=255)  # a2, a3, b3, b4, etc.
+
+    class Meta:
+        db_table = "reserved_seats"

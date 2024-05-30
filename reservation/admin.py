@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from reservation.models import Reservation, Seat
+
+admin.site.register(Reservation)
+admin.site.register(Seat)

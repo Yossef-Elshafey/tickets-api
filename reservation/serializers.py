@@ -9,3 +9,6 @@ class ReservationSer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
         fields = "__all__"
+
+    def create(self, validated_data):
+        return super().create(validated_data)
