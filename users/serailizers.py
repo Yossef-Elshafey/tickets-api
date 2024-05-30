@@ -1,6 +1,5 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
-from django.db.models.fields import EmailField
 from rest_framework import serializers
 from rest_framework.fields import CharField
 from rest_framework.validators import UniqueValidator
@@ -14,7 +13,7 @@ class SigninSer(serializers.ModelSerializer):
 
 class SignupSer(serializers.ModelSerializer):
     @staticmethod
-    def required(value):
+    def non_blank(value):
         if value is None:
             raise serializers.ValidationError("field required")
 
@@ -22,8 +21,8 @@ class SignupSer(serializers.ModelSerializer):
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
     password_compare = serializers.CharField(write_only=True)
-    first_name = CharField(validators=[required])
-    last_name = CharField(validators=[required])
+    first_name = CharField(validators=[non_blank])
+    last_name = CharField(validators=[non_blank])
 
     class Meta:
         fields = ("first_name", "last_name", "email", "password", "password_compare")
