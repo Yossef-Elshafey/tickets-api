@@ -1,6 +1,4 @@
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
-from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -23,7 +21,9 @@ class SigninView(generics.CreateAPIView):
                     {"error": "invalid creds"}, status=status.HTTP_400_BAD_REQUEST
                 )
             token, created = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key}, status=status.HTTP_200_OK)
+            return Response(
+                {"token": token.key, "id": user.id}, status=status.HTTP_200_OK
+            )
 
         except User.DoesNotExist:
             return Response(
@@ -52,3 +52,13 @@ class SignOut(APIView):
         user = self.request.user
         Token.objects.get(user=user).delete()
         return Response("", status=status.HTTP_204_NO_CONTENT)
+
+
+class MyUser(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        query = User.objects.get(id=user.id)
+        ser = SignupSer(query)
+        return Response(ser.data)

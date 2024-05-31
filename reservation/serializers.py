@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from hall.models import Hall
-from movies.models import Movie
 from reservation.models import Reservation
 
 
@@ -31,6 +30,7 @@ class CustomValidation:
 
     @staticmethod
     def raise_(msg):
+        # silly but i liked it , helps with one line statement
         raise msg
 
     def validate_seat_names(self, num_of_seats, names):
@@ -39,9 +39,7 @@ class CustomValidation:
         """
         if num_of_seats and names:
             names_count = len(names.split(","))
-            print(names_count == num_of_seats)
 
-            # this look trash but i love python hacks
             return (
                 True
                 if num_of_seats == names_count
@@ -54,16 +52,22 @@ class CustomValidation:
 
 
 class ReservationSer(serializers.ModelSerializer):
-
     class Meta:
         model = Reservation
         fields = "__all__"
 
+        # custoemr is going to be written default from request.user
+        extra_kwargs = {"customer": {"read_only": True}}
+
     def create(self, validated_data):
+        request = self.context["request"]
+        user = request.user
         vald = CustomValidation()
         nos = validated_data["num_of_seats"]
-        # if something went wrong raise experssion will be raised
+
         vald.check_cap(validated_data["movie_id"], nos)
         vald.validate_seat_names(nos, validated_data["seat_names"])
-        reservation = Reservation.objects.create(**validated_data)
+
+        reservation = Reservation(customer=user, **validated_data)
+        reservation.save()
         return reservation
