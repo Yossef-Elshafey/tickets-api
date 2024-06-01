@@ -1,4 +1,3 @@
-from django.db.models.query import Q
 from rest_framework import generics, permissions
 from rest_framework.views import Response
 from reservation.models import Reservation

@@ -1,8 +1,4 @@
-from django.db import IntegrityError
 from rest_framework import generics, permissions
-from rest_framework.response import Response
-from rest_framework.views import status
-from hall.models import Hall
 from movies.models import Movie
 from movies.serailizers import MoviesSer
 from rest_framework.pagination import PageNumberPagination

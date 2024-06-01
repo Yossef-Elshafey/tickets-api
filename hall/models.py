@@ -1,6 +1,4 @@
 from django.db import models
-from django.db.models.aggregates import Sum
-
 from reservation.models import Reservation
 
 
