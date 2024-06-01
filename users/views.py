@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 from rest_framework import generics, status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from users.serailizers import SigninSer, SignupSer
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from users.serailizers import AdminUserSer, SigninSer, SignupSer
 
 
 class SigninView(generics.CreateAPIView):
@@ -36,13 +37,17 @@ class SignUpView(generics.CreateAPIView):
     serializer_class = SignupSer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        token = Token.objects.create(user=user)
-        return Response(
-            {"token": token.key, "id": user.id}, status=status.HTTP_201_CREATED
-        )
+        try:
+
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            token = Token.objects.create(user=user)
+            return Response(
+                {"token": token.key, "id": user.id}, status=status.HTTP_201_CREATED
+            )
+        except IntegrityError:
+            return Response("first-last name already exists")
 
 
 class SignOut(APIView):
@@ -62,3 +67,26 @@ class MyUser(generics.ListAPIView):
         query = User.objects.get(id=user.id)
         ser = SignupSer(query)
         return Response(ser.data)
+
+
+class AdminUser(generics.CreateAPIView):
+    permission_classes = [IsAdminUser]
+    queryset = User.objects.all()
+    serializer_class = AdminUserSer
+
+    def create(self, request, *args, **kwargs):
+        try:
+            print(self.request.data)
+            serializer = self.get_serializer(data=self.request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            token = Token.objects.create(user=user)
+            return Response(
+                {"token": token.key, "id": user.id}, status=status.HTTP_201_CREATED
+            )
+
+        except IntegrityError:
+            return Response(
+                "User with first/last name already exist",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
