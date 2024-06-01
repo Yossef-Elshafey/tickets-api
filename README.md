@@ -53,5 +53,3 @@ at this point you should run server without any errors
 ```
 python manage.py runserver
 ```
-
-# To be continue
