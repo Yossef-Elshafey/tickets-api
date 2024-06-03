@@ -20,7 +20,7 @@ class SingleHall(generics.UpdateAPIView, generics.DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         try:
-            obj = self.queryset.filter(id=self.kwargs["id"]).delete()
+            self.queryset.filter(id=self.kwargs["id"]).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except IntegrityError:
             assigned_movie = Movie.objects.select_related("hall_id").filter(
