@@ -23,7 +23,8 @@ class SigninView(generics.CreateAPIView):
                 )
             token, created = Token.objects.get_or_create(user=user)
             return Response(
-                {"token": token.key, "id": user.id}, status=status.HTTP_200_OK
+                {"token": token.key, "id": user.id, "admin": user.is_superuser},
+                status=status.HTTP_200_OK,
             )
 
         except User.DoesNotExist:
@@ -38,7 +39,6 @@ class SignUpView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         try:
-
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             user = serializer.save()
@@ -47,7 +47,7 @@ class SignUpView(generics.CreateAPIView):
                 {"token": token.key, "id": user.id}, status=status.HTTP_201_CREATED
             )
         except IntegrityError:
-            return Response("first-last name already exists")
+            return Response({"username": ["first/last name already exist"]})
 
 
 class SignOut(APIView):
@@ -82,11 +82,12 @@ class AdminUser(generics.CreateAPIView):
             user = serializer.save()
             token = Token.objects.create(user=user)
             return Response(
-                {"token": token.key, "id": user.id}, status=status.HTTP_201_CREATED
+                {"token": token.key, "id": user.id, "isAdmin": True},
+                status=status.HTTP_201_CREATED,
             )
 
         except IntegrityError:
             return Response(
-                "User with first/last name already exist",
+                "User exists",
                 status=status.HTTP_400_BAD_REQUEST,
             )

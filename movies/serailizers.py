@@ -15,4 +15,5 @@ class MoviesSer(serializers.ModelSerializer):
                 message="name / release_date already exist",
             )
         ]
+        depth = 1
         extra_kwargs = {"slug": {"read_only": True}}

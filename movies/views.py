@@ -5,7 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 
 
 class CustomMoviePaginator(PageNumberPagination):
-    page_size = 5
+    page_size = 2
     page_size_query_param = "page_size"
     max_page_size = 10
     page_query_param = "p"
@@ -24,7 +24,7 @@ class CreateMovie(generics.CreateAPIView):
     permission_classes = [permissions.IsAdminUser]
     queryset = Movie.objects.select_related("hall_id").all()
     serializer_class = MoviesSer
-    pagination_class = CustomMoviePaginator
+    # pagination_class = CustomMoviePaginator
 
 
 class ListMovies(generics.ListAPIView):

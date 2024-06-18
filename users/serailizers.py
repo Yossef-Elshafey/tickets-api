@@ -66,11 +66,11 @@ class SignupSer(serializers.ModelSerializer):
         return inst
 
     def validate(self, attrs):
-        vald = CustomValidators.password_validations(attrs=attrs)
+        CustomValidators.password_validations(attrs=attrs)
         return attrs
 
     def create(self, validated_data):
-        non_compare = validated_data.pop("password_compare")
+        validated_data.pop("password_compare")
         validated_data["password"] = make_password(validated_data.get("password"))
         username = f"{validated_data['first_name'] } { validated_data['last_name'] }"
         user = User.objects.create(username=username, **validated_data)
@@ -99,7 +99,7 @@ class AdminUserSer(serializers.ModelSerializer):
         }
 
     def validate(self, attrs):
-        vald = CustomValidators.password_validations(attrs=attrs)
+        CustomValidators.password_validations(attrs=attrs)
         return attrs
 
     def create(self, validated_data):

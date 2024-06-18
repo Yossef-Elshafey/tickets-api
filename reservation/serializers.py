@@ -56,7 +56,7 @@ class ReservationSer(serializers.ModelSerializer):
         model = Reservation
         fields = "__all__"
 
-        # custoemr is going to be written default from request.user
+        # custoemr is written default from request.user
         extra_kwargs = {"customer": {"read_only": True}}
 
     def create(self, validated_data):
