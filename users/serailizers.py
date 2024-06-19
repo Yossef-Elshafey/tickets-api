@@ -83,6 +83,7 @@ class AdminUserSer(serializers.ModelSerializer):
         validators=[UniqueValidator(queryset=User.objects.all(), message="Email exist")]
     )
     first_name = serializers.CharField(validators=[CustomValidators.non_blank])
+    last_name = CharField(validators=[CustomValidators.non_blank])
 
     class Meta:
         fields = (
@@ -105,7 +106,7 @@ class AdminUserSer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop("password_compare")
         validated_data["password"] = make_password(validated_data["password"])
-        username = validated_data["first_name"]
+        username = f"{validated_data['first_name'] } { validated_data['last_name'] }"
         user = User.objects.create(
             username=username, is_staff=True, is_superuser=True, **validated_data
         )
