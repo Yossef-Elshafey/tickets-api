@@ -11,11 +11,17 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 class ListReservation(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = Reservation.objects.prefetch_related("movie_id", "customer").all()
+    queryset = Reservation.objects.select_related(
+        "movie_id", "customer", "movie_id__hall_id"
+    ).all()
     serializer_class = ReservationSer
 
     def get(self, request, *args, **kwargs):
         user = self.request.user
+        if user.is_superuser:
+            queryset = self.get_queryset()
+            serailizer = self.get_serializer(queryset, many=True)
+            return Response(serailizer.data)
         queryset = self.get_queryset().filter(customer=user)
         serailizer = self.get_serializer(queryset, many=True)
         return Response(serailizer.data)

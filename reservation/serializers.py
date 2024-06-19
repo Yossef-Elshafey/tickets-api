@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from hall.models import Hall
 from reservation.models import Reservation
+from django.forms.models import model_to_dict
 
 
 class CustomValidation:
@@ -55,9 +56,19 @@ class ReservationSer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
         fields = "__all__"
-
         # custoemr is written default from request.user
         extra_kwargs = {"customer": {"read_only": True}}
+
+    # customer = serializers.StringRelatedField()
+    # movie_id = MoviesSer()
+
+    def to_representation(self, instance):
+        data = model_to_dict(instance)
+        # hall is related to movie as foreign key
+        data["hall"] = instance.movie_id.hall_id.name
+        data["customer"] = instance.customer.username
+        data["movie_id"] = instance.movie_id.name
+        return data
 
     def create(self, validated_data):
         request = self.context["request"]

@@ -78,7 +78,6 @@ class AdminUser(generics.CreateAPIView):
         try:
             serializer = self.get_serializer(data=self.request.data)
             serializer.is_valid(raise_exception=True)
-            print(serializer.validated_data)
             user = serializer.save()
             token = Token.objects.create(user=user)
             return Response(
