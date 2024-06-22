@@ -4,16 +4,22 @@ from reservation.models import Reservation
 from reservation.serializers import ReservationSer
 
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
+class IsOwnerOrAdmin(permissions.BasePermission):
+
     def has_object_permission(self, request, view, obj):
-        return obj.customer == request.user
+        print(request.user)
+        return (
+            True if obj.customer == request.user or request.user.is_superuser else False
+        )
 
 
 class ListReservation(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = Reservation.objects.select_related(
-        "movie_id", "customer", "movie_id__hall_id"
-    ).all()
+    queryset = (
+        Reservation.objects.order_by("reservation_date")
+        .select_related("movie_id", "customer", "movie_id__hall_id")
+        .all()
+    )
     serializer_class = ReservationSer
 
     def get(self, request, *args, **kwargs):
@@ -28,7 +34,7 @@ class ListReservation(generics.ListCreateAPIView):
 
 
 class SingleReservation(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrAdmin]
     queryset = Reservation.objects.prefetch_related("movie_id", "customer").all()
     serializer_class = ReservationSer
     lookup_field = "id"

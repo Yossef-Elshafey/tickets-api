@@ -59,15 +59,12 @@ class ReservationSer(serializers.ModelSerializer):
         # custoemr is written default from request.user
         extra_kwargs = {"customer": {"read_only": True}}
 
-    # customer = serializers.StringRelatedField()
-    # movie_id = MoviesSer()
-
     def to_representation(self, instance):
         data = model_to_dict(instance)
-        # hall is related to movie as foreign key
         data["hall"] = instance.movie_id.hall_id.name
         data["customer"] = instance.customer.username
         data["movie_id"] = instance.movie_id.name
+        data["reserve_date"] = instance.reservation_date
         return data
 
     def create(self, validated_data):
