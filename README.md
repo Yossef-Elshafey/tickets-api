@@ -2,6 +2,8 @@
 
 a simple cinema reservation app that depends on django and django-rest-framework using default token auth for drf
 
+![screenshot](./paths.png)
+
 ## Features
 
 - [Halls](#hall-section)
@@ -13,34 +15,29 @@ a simple cinema reservation app that depends on django and django-rest-framework
 
 <h6 style="color:green">Ensure you have pipenv installed locally then catch up</h6>
 
-cd into desired directory
-
 ```
 git clone https://github.com/Yossef-Elshafey/tickets-api
 ```
 
-cd into tickets-api
+```
+cd tickets-api
+```
 
 ```
 pipenv install --dev
 ```
 
-- this would create a virtual environment using pipenv
-- install packages includes devel
-
-activate your venv
+- virtual environment using pipenv with required packeges
 
 ```
 pipenv shell
 ```
 
+- for venv activation
+
 #### Migrations
 
-migrations for django/drf(sessions,tables,auth-token,etc.. ) \
-migrations for the apps
-
 ```
-python manage.py makemigrations
 python manage.py makemigrations hall movies reservation users
 ```
 

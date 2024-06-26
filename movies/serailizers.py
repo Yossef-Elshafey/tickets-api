@@ -21,7 +21,3 @@ class MoviesSer(serializers.ModelSerializer):
                 message="name / release_date already exist",
             )
         ]
-
-    def create(self, data):
-        print(data)
-        return Movie.objects.create(**data)
