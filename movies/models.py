@@ -10,9 +10,9 @@ class Movie(models.Model):
     image = models.ImageField(upload_to="images/movies/")
     release_date = models.DateField()
     duration = models.DecimalField(max_digits=3, decimal_places=2)
-    avaliable = models.BooleanField(default=True)  # once add it should be avaliable
+    avaliable = models.BooleanField(default=True)
     slug = models.SlugField(default="", null=True, blank=True)
-    hall_id = models.ForeignKey("hall.Hall", on_delete=models.SET_DEFAULT, default=0)
+    hall_id = models.ForeignKey("hall.Hall", on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
